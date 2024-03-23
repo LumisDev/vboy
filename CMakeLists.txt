@@ -1,24 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(vboy)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
-include(FetchContent)
 option(VBOY_BUILD_TEST "Build and test using CTest" ON)
 include(CTest)
 find_package(OpenAL REQUIRED)
-FetchContent_Declare(
-    glfw
-    GIT_REPOSITORY https://github.com/glfw/glfw.git
-    GIT_TAG master
-)
-FetchContent_Declare(
-    lua
-    GIT_REPOSITORY https://github.com/LumisDev/lua-cmake.git
-    GIT_TAG master
-)
-FetchContent_MakeAvailable(glfw lua)
+add_subdirectory(extern/glfw)
+add_subdirectory(extern/lua)
 file(GLOB_RECURSE VBOY_SRCS "src/*.cpp")
 add_library(vboy SHARED ${VBOY_SRCS} src/glad.c)
-target_include_directories(vboy PRIVATE include ${OPENAL_INCLUDE_DIR})
+target_include_directories(vboy PRIVATE include ${OPENAL_INCLUDE_DIR} extern/glfw/include extern/lua/include)
 target_link_libraries(vboy PRIVATE glfw lualib ${OPENAL_LIBRARY})
 add_dependencies(vboy glfw lualib)
 if(MSVC)
