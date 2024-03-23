@@ -1,0 +1,41 @@
+cmake_minimum_required(VERSION 3.10)
+project(vboy)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+include(FetchContent)
+option(VBOY_BUILD_TEST "Build and test using CTest" ON)
+include(CTest)
+find_package(OpenAL REQUIRED)
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG master
+)
+FetchContent_Declare(
+    lua
+    GIT_REPOSITORY https://github.com/LumisDev/lua-cmake.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(glfw lua)
+file(GLOB_RECURSE VBOY_SRCS "src/*.cpp")
+add_library(vboy SHARED ${VBOY_SRCS} src/glad.c)
+target_include_directories(vboy PRIVATE include ${OPENAL_INCLUDE_DIR})
+target_link_libraries(vboy PRIVATE glfw lualib ${OPENAL_LIBRARY})
+add_dependencies(vboy glfw lualib)
+if(MSVC)
+    # Create static library
+    add_library(vboy_static STATIC ${VBOY_SRCS} src/glad.c)
+    target_include_directories(vboy_static PRIVATE include ${OPENAL_INCLUDE_DIR})
+    target_link_libraries(vboy_static PRIVATE glfw lualib ${OPENAL_LIBRARY})
+
+    # Set the output name of the static library
+    set_target_properties(vboy_static PROPERTIES OUTPUT_NAME vboy)
+endif()
+if(VBOY_BUILD_TEST)
+    file(GLOB_RECURSE TEST_SOURCES "test/src/*.cpp")
+
+    add_executable(vboy_test ${TEST_SOURCES})
+    target_link_libraries(vboy_test PRIVATE vboy)
+    target_include_directories(vboy_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    add_test(NAME vboyTest COMMAND vboy_test)
+    add_dependencies(vboy_test vboy)
+endif()
