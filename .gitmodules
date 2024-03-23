@@ -1,0 +1,6 @@
+[submodule "extern/glfw"]
+	path = extern/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "extern/lua"]
+	path = extern/lua
+	url = https://github.com/LumisDev/lua-cmake.git
