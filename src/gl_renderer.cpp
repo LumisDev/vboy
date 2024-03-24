@@ -1,8 +1,8 @@
 #include <vboy/gl_renderer.hpp>
 #include <stdexcept>
-GLRenderer::GLRenderer(GLADloadproc procAddress){
-    if (!gladLoadGLLoader(procAddress)) {
-        throw std::runtime_error("GLAD couldn't load OpenGL!");
+void GLRenderer::init(GLADloadproc procAddress){
+    if (!gladLoadGLLoader(procAddress)){
+        throw std::runtime_error("Failed to initialize GLAD");
         return;
     }
 }

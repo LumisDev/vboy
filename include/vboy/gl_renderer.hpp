@@ -4,6 +4,6 @@
 
 class GLRenderer {
 public:
-    GLRenderer(GLADloadproc procAddress);
+    void init(GLADloadproc procAddress);
     void clear();
 };

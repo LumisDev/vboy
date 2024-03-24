@@ -1,6 +1,6 @@
 #include <vboy/window.hpp>
 #include <stdexcept>
-#include <vboy/gl_renderer.hpp>
+
 Window::Window(const std::string& title, int width, int height)
     : m_title(title.c_str()), m_width(width), m_height(height){
         if (!glfwInit()){
@@ -17,8 +17,8 @@ Window::Window(const std::string& title, int width, int height)
         glfwDestroyWindow(m_window);
         glfwTerminate();
     }
+
 void Window::update(){
-    GLRenderer renderer((GLADloadproc)glfwGetProcAddress);
     while(!glfwWindowShouldClose(m_window)){
         glfwPollEvents();
         renderer.clear();
